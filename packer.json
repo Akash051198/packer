@@ -34,7 +34,7 @@
                 "sudo touch /home/ansibleadmin/.ssh/authorized_keys",
                 "sudo usermod -aG sudo ansibleadmin",
                 "echo 'ansibleadmin ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /etc/sudoers",
-                "echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJTg6PI1iQMcGXd9QLITkLiynuEi4QJtZptmAFhhe/I1 ubuntu@ip-172-31-41-246' | sudo tee /home/ansibleadmin/.ssh/authorized_keys"
+                "echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJTg6PI1iQMcGXd9QLITkLiynuEi4QJtZptmAFhhe/I1' | sudo tee /home/ansibleadmin/.ssh/authorized_keys"
             ]
         },
         {
