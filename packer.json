@@ -1,0 +1,92 @@
+{
+    "_comment": "AMI Image With Docker & Nginx",
+    "variables": {
+        "region": "",
+        "source_ami": "",
+        "instance_type": "",
+        "vpc_id": "",
+        "subnet_id": ""
+    },
+    "_comment1": "packer build -var \"aws_secret_key=foo\" packer.json",
+    "_comment2": "packer build -var-file vars.json packer.json",
+    "builders": [
+        {
+            "type": "amazon-ebs",
+            "region": "{{user `region`}}",
+            "source_ami": "{{user `source_ami`}}",
+            "instance_type": "{{user `instance_type`}}",
+            "ssh_username": "ubuntu",
+            "ami_name": "DevSecOps-Ansible-Image-{{isotime | clean_resource_name}}",
+            "vpc_id": "{{user `vpc_id`}}",
+            "subnet_id": "{{user `subnet_id`}}",
+            "tags": {
+                "Name": "DevSecOps-Ansible-Image-{{isotime | clean_resource_name}}"
+            }
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+                "sudo useradd -m ansibleadmin --shell /bin/bash",
+                "sudo mkdir -p /home/ansibleadmin/.ssh",
+                "sudo chown -R ansibleadmin /home/ansibleadmin/",
+                "sudo touch /home/ansibleadmin/.ssh/authorized_keys",
+                "sudo usermod -aG sudo ansibleadmin",
+                "echo 'ansibleadmin ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /etc/sudoers",
+                "echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCyzKHe+XbwCbmEItDgPnnNtv3oC7mjmcKjBuGX4VkLGHtgkCJOCBLloyqy8rfurx64Je1wLbmYHZ/D46cd4yiMvfSIvSlJa0kguYokeIlKbdTHDq92uC1MUxKu1m6DvNbxOS5EQXMpt9GPtMumljrYi2VYEP00B6ewL5FmKuDJZUldJYBX6WLPAFlaFsPKvswdnrykjmo9Oqr2lTrHAUE1WqR4f7++bIEkg+3zffzI0ggXPQjFi3nDmj9rKWmG7IG/6vV3E/A4HFeLciSjiWp/1EXGirjgpn4AaSbDFv+KvQMd7Dt5WCH7P3jUF061cJkAoO6kseqC6r1wf77l54YFRZmEY91gq31reSMUI/k0/OlhdCLdkPjhdLcdoTwOhC/MNqTrkiGIAzg0BTTHLC0kOvg8wVNY/EoHO0TOT/TenmdMgp9I/qDIGo6HBYgzpsgDDbXI8B3rOc9x/3V/mTLI5tpKgqmpoZz1lYrQsrOOMJtGPOJI5SsqKI0tOxaNNy0= ec2-user@ip-172-31-33-179.ap-south-1.compute.internal' | sudo tee /home/ansibleadmin/.ssh/authorized_keys"
+            ]
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "sudo apt update -y",
+                "curl https://get.docker.com | bash"
+            ]
+        },
+        {
+            "type": "file",
+            "source": "docker.service",
+            "destination": "/tmp/docker.service"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "sudo cp /tmp/docker.service /lib/systemd/system/docker.service",
+                "sudo usermod -a -G docker ubuntu",
+                "sudo usermod -a -G docker ansibleadmin",
+                "sudo systemctl daemon-reload",
+                "sudo service docker restart"
+            ]
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "sudo useradd --no-create-home --shell /bin/false node_exporter",
+                "wget https://github.com/prometheus/node_exporter/releases/download/v1.3.1/node_exporter-1.3.1.linux-amd64.tar.gz",
+                "tar xvf node_exporter-1.3.1.linux-amd64.tar.gz",
+                "sudo cp node_exporter-1.3.1.linux-amd64/node_exporter /usr/local/bin/",
+                "sudo chown node_exporter:node_exporter /usr/local/bin/node_exporter"
+            ]
+        },
+        {
+            "type": "file",
+            "source": "node_exporter.service",
+            "destination": "/tmp/node_exporter.service"
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "sudo cp /tmp/node_exporter.service /etc/systemd/system/node_exporter.service",
+                "sudo systemctl enable node_exporter",
+                "rm -rf node_exporter*"
+            ]
+        },
+        {
+            "type": "shell",
+            "inline": [
+                "sudo apt install -y unzip stress net-tools jq"
+            ]
+        }
+    ]
+}

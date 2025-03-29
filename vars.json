@@ -1,0 +1,7 @@
+{
+    "region": "ap-south-1",
+    "source_ami": "ami-076c6dbba59aa92e6",
+    "instance_type": "t2.medium",
+    "vpc_id": "vpc-06001de197da79485",
+    "subnet_id": "subnet-00539a7818cf9ffdc"
+}
