@@ -15,7 +15,7 @@
             "region": "{{user `region`}}",
             "source_ami": "{{user `source_ami`}}",
             "instance_type": "{{user `instance_type`}}",
-            "ssh_username": "ec2-user",
+            "ssh_username": "ubuntu",
             "ami_name": "DevSecOps-Ansible-Image-{{isotime | clean_resource_name}}",
             "vpc_id": "{{user `vpc_id`}}",
             "subnet_id": "{{user `subnet_id`}}",
@@ -34,7 +34,7 @@
                 "sudo touch /home/ansibleadmin/.ssh/authorized_keys",
                 "sudo usermod -aG sudo ansibleadmin",
                 "echo 'ansibleadmin ALL=(ALL) NOPASSWD: ALL' | sudo tee -a /etc/sudoers",
-                "echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCyzKHe+XbwCbmEItDgPnnNtv3oC7mjmcKjBuGX4VkLGHtgkCJOCBLloyqy8rfurx64Je1wLbmYHZ/D46cd4yiMvfSIvSlJa0kguYokeIlKbdTHDq92uC1MUxKu1m6DvNbxOS5EQXMpt9GPtMumljrYi2VYEP00B6ewL5FmKuDJZUldJYBX6WLPAFlaFsPKvswdnrykjmo9Oqr2lTrHAUE1WqR4f7++bIEkg+3zffzI0ggXPQjFi3nDmj9rKWmG7IG/6vV3E/A4HFeLciSjiWp/1EXGirjgpn4AaSbDFv+KvQMd7Dt5WCH7P3jUF061cJkAoO6kseqC6r1wf77l54YFRZmEY91gq31reSMUI/k0/OlhdCLdkPjhdLcdoTwOhC/MNqTrkiGIAzg0BTTHLC0kOvg8wVNY/EoHO0TOT/TenmdMgp9I/qDIGo6HBYgzpsgDDbXI8B3rOc9x/3V/mTLI5tpKgqmpoZz1lYrQsrOOMJtGPOJI5SsqKI0tOxaNNy0= ec2-user@ip-172-31-33-179.ap-south-1.compute.internal' | sudo tee /home/ansibleadmin/.ssh/authorized_keys"
+                "echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJTg6PI1iQMcGXd9QLITkLiynuEi4QJtZptmAFhhe/I1 ubuntu@ip-172-31-41-246' | sudo tee /home/ansibleadmin/.ssh/authorized_keys"
             ]
         },
         {
